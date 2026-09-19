@@ -7,7 +7,16 @@ import { Component } from '@angular/core';
   standalone: false,
 })
 export class Tab1Page {
-  todo: String[] = ['Buy groceries', 'Walk the dog', 'Read a book'];
+  todos: String[] = ['Buy groceries', 'Walk the dog', 'Read a book'];
   constructor() {}
+  onAddTodo(newTodo: string) {
 
+    console.log('Adding new todo:', newTodo);
+    if (newTodo.trim() !== '') {
+      this.todos.push(newTodo);
+    }
+  }
+  onDeleteTodo(index: number) {
+    this.todos.splice(index, 1);
+  }
 }

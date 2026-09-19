@@ -12,9 +12,15 @@
       <ion-title size="large">Tab 1</ion-title>
     </ion-toolbar>
   </ion-header>
+<ion-item></ion-item>
+  <ion-item>
+    <ion-label>Todo text:</ion-label>
+    <ion-input #myinput></ion-input>
+    <ion-button (click)="onAddTodo(myinput.value)">Add</ion-button>
+  </ion-item> 
 
   <ion-list>
-    <ion-item *ngFor="let item of todo">
+    <ion-item *ngFor="let item of todos">
       {{ item }}
     </ion-item>
   </ion-list>
