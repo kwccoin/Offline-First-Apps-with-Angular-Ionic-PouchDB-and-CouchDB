@@ -7,7 +7,7 @@ import { Component } from '@angular/core';
   standalone: false,
 })
 export class Tab1Page {
-
+  todo: String[] = ['Buy groceries', 'Walk the dog', 'Read a book'];
   constructor() {}
 
 }
