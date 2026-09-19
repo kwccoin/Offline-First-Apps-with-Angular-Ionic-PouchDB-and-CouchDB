@@ -9,3 +9,6 @@ then start
 
 - ionic serve
 - http://localhost:8100 
+
+instead of adding submoudle i delet github and hop now we can track updats
+
