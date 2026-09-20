@@ -10,14 +10,38 @@ export class Tab2Page {
 
   constructor() {}
 
-  onAddTodo(firstNumber: string, secondNumber: string) {
+  todos: string[] = ['a', 'b', 'c' ];
+
+   //first declare variable for your input.
+task:any;
+pri:any;
+
+post3(){
+   console.log('task',this.task);
+   console.log('pri',this.pri)
+       if (this.task.trim() !== '') {
+      this.todos.push(this.task.toString() + ' - ' + this.pri.toString());
+    }
+   } 
+
+  onAddTodo1(newTodo: string) {
+    console.log('Adding new todo:', newTodo);
+    if (newTodo.trim() !== '') {
+      this.todos.push(newTodo);
+    }
+  }
+
+  onAddTodo2(firstNumber: string, secondNumber: string) {
     // Implementation for adding todo
+    
     console.log('Adding new todo with numbers:', firstNumber, secondNumber);
     const fNumber = parseFloat(firstNumber);
     const sNumber = parseFloat(secondNumber);
     const sum = fNumber + sNumber;
     alert(`The sum of ${fNumber} and ${sNumber} is: ${sum}`);   
        console.log('sum:', sum); 
+    this.todos.push(`Sum of ${fNumber} and ${sNumber} is: ${sum}`);
+    
   } 
 
 }

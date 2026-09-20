@@ -18,6 +18,36 @@
   <ion-input type="text" placeholder="Enter number 1" #firstNumber></ion-input>
   <ion-input type="text" placeholder="Enter number 2" #secondNumber></ion-input>
 
-  <ion-button (click)="onAddTodo(firstNumber.value, secondNumber.value)">Add</ion-button>
-  
+  <ion-button (click)="onAddTodo2('11','12')">Add2String</ion-button>
+
+  <ion-item>
+      <ion-label floating> Task:  </ion-label> 
+      <ion-input type="text" [(ngModel)]="task"></ion-input>
+    </ion-item>
+
+  <ion-item>
+      <ion-label>Priority: </ion-label>
+      <ion-input type="text" [(ngModel)]="pri"></ion-input>
+    </ion-item>
+
+   
+  <ion-button (click)="post3()">Use Ion Click </ion-button>
+
+  <ion-list>
+    <ion-item *ngFor="let item of todos">
+      {{ item }}
+    </ion-item>
+  </ion-list>
+
 </ion-content>
+
+
+
+/*
+// cannot use onAddTodo(firstNumber, secondNumber) 
+// because firstNumber and secondNumber are not HTMLIonInputElement, 
+// they are ElementRef. So we need to use firstNumber.value and secondNumber.value 
+// to get the value of the input fields.
+// this does not work
+//   < ion-button (click)="onAddTodo2(firstNumber.value, secondNumber.value)" >Add1Value< /ion-button>
+*/

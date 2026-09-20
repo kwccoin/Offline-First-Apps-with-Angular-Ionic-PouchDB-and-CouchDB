@@ -30,5 +30,6 @@ instead of adding submoudle i delet github and hop now we can track update
 - Building an enterprise app? Ionic has Enterprise Support and Features: https://ion.link/enterprise-edition
  ```
 
- 
+ I guess the issue is the if you use the default you have to handle ioniputElement,
+ if you use a function not on the list you can handle it differently 
 
