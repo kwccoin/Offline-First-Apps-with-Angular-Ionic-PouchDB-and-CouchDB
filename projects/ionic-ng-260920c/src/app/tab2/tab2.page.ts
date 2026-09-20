@@ -31,7 +31,7 @@ post3(){
     }
   }
 
-  onAddTodo2(firstNumber: string, secondNumber: string) {
+  onAddTodo2(firstNumber: any, secondNumber: any) { // use any instead of string
     // Implementation for adding todo
     
     console.log('Adding new todo with numbers:', firstNumber, secondNumber);

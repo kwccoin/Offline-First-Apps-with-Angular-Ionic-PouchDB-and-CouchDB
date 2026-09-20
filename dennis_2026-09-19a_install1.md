@@ -30,6 +30,10 @@ instead of adding submoudle i delet github and hop now we can track update
 - Building an enterprise app? Ionic has Enterprise Support and Features: https://ion.link/enterprise-edition
  ```
 
- I guess the issue is the if you use the default you have to handle ioniputElement,
+ I guess the issue is the if you use the function like generated todo default you have to handle ioniputElement,
  if you use a function not on the list you can handle it differently 
+  but so far only as parameter outside 
+  and then use this.x.tostring() to get the info
+
+  You cannot use #firstnumber as this is any ... 
 

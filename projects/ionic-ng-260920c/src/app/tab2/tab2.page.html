@@ -18,7 +18,7 @@
   <ion-input type="text" placeholder="Enter number 1" #firstNumber></ion-input>
   <ion-input type="text" placeholder="Enter number 2" #secondNumber></ion-input>
 
-  <ion-button (click)="onAddTodo2('11','12')">Add2String</ion-button>
+  <ion-button (click)="onAddTodo2(firstNumber.value, secondNumber.value)">Add2String</ion-button> // not use '11','12'
 
   <ion-item>
       <ion-label floating> Task:  </ion-label> 
