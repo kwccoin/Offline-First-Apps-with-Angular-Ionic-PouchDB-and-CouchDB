@@ -1,0 +1,7 @@
+{
+  "name": "ionic-ng-260920c",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

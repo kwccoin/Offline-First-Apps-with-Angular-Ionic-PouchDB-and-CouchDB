@@ -1,0 +1,7 @@
+{
+  "name": "ionic-debugging-260920b",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
