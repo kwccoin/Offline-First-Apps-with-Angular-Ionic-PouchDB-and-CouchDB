@@ -37,3 +37,8 @@ instead of adding submoudle i delet github and hop now we can track update
 
   You cannot use #firstnumber as this is any ... 
 
+----
+
+The video also use stepping and also check on the properties of the variable
+
+https://www.youtube.com/watch?v=akh6V6Yw1lw
