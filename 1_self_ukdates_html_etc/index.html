@@ -244,6 +244,8 @@
             const arrivalDate = arrivalInput.value;
             const departureDate = departureInput.value;
 
+            if (!arrivalDate || !departureDate) return;
+
             if (new Date(departureDate) <= new Date(arrivalDate)) {
                 alert("Departure date must be after the arrival date.");
                 return;
@@ -251,18 +253,24 @@
 
             const nights = calculateNights(arrivalDate, departureDate);
 
+            // Create a completely separate data object
             const doc = {
-                _id: new Date().toISOString(),
+                _id: 'trip_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7),
                 arrival: arrivalDate,
                 departure: departureDate,
                 nights: nights
             };
 
+            // Save, then refresh the history list first, and reset the form layout LAST
             db.put(doc).then(function () {
-                stayForm.reset();
                 fetchAndRenderTrips();
+                
+                // Clear inputs manually without triggering form event loops
+                arrivalInput.value = '';
+                departureInput.value = '';
             });
         });
+
 
         function calculateNights(arrival, departure) {
             const date1 = new Date(arrival + "T00:00:00");
