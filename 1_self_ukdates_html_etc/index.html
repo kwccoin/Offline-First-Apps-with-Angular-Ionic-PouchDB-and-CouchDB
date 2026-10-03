@@ -235,8 +235,8 @@
 
         // Night calculation utility
         function calculateNights(arrival, departure) {
-            const date1 = new Date(arrival);
-            const date2 = new Date(departure);
+            const date1 = new Date(arrival + "T00:00:00");
+            const date2 = new Date(departure + "T00:00:00");
             
             // Difference in milliseconds
             const diffTime = Math.abs(date2 - date1);
