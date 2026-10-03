@@ -30,3 +30,6 @@ and change the cloudfare to
 ```
 <script src="pouchdb.min.js"></script>
 ```
+
+### note use of shift reload otherwise may load the old script in the cache
+
