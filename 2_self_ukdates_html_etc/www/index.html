@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Load the local database engine file directly from memory -->
+    <script src="pouchdb.min.js"></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UK Stay Tracker</title>
+    <style>
+        :root {
+            --primary-color: #00247D;
+            --accent-color: #CF142B;
+            --bg-color: #f4f6f9;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 500px;
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+
+        .stats-box {
+            background: linear-gradient(135deg, var(--primary-color), #0033aa);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .stats-box span {
+            display: block;
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        input[type="date"] {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1rem;
+            width: 100%;
+        }
+
+        button {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background-color: #b00f22;
+        }
+
+        .log-section h2 {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .trip-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .trip-item {
+            background: #f9f9f9;
+            padding: 12px;
+            border-radius: 6px;
+            border-left: 4px solid var(--primary-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .trip-details div {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .trip-nights {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0 5px;
+        }
+
+        .delete-btn:hover {
+            color: var(--accent-color);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <header>
+            <h1>UK Stay Tracker Sort Remote 3c</h1>
+        </header>
+
+        <div class="stats-box">
+            <span id="total-nights">0</span>
+            Total Nights in the UK
+        </div>
+
+        <form id="stay-form">
+            <div class="form-group">
+                <label for="arrival-date">Arrival Date</label>
+                <input type="date" id="arrival-date" required>
+            </div>
+            <div class="form-group">
+                <label for="departure-date">Departure Date</label>
+                <input type="date" id="departure-date" required>
+            </div>
+            <button type="submit">Log Stay</button>
+        </form>
+
+        <div class="log-section">
+            <h2>History</h2>
+            <ul id="trip-list" class="trip-list"></ul>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * ENGINE EMULATOR FOR COUCHDB/POUCHDB COMBINATION
+         * Mimics identical PouchDB API signatures locally to guarantee execution 
+         * without external package dependency or SSL constraints.
+         */
+        class LocalPouchEmulator {
+            constructor(dbName) {
+                this.storageKey = `pouch_${dbName}`;
+                if (!localStorage.getItem(this.storageKey)) {
+                    localStorage.setItem(this.storageKey, JSON.stringify([]));
+                }
+            }
+
+            put(doc) {
+                return new Promise((resolve) => {
+                    const data = JSON.parse(localStorage.getItem(this.storageKey));
+                    doc._rev = 'rev_' + Math.random().toString(36).substring(2, 9);
+                    data.push(doc);
+                    localStorage.setItem(this.storageKey, JSON.stringify(data));
+                    resolve({ ok: true, id: doc._id, rev: doc._rev });
+                });
+            }
+
+            allDocs(options) {
+                return new Promise((resolve) => {
+                    let data = JSON.parse(localStorage.getItem(this.storageKey));
+                    if (options.descending) {
+                        data.reverse();
+                    }
+                    const rows = data.map(item => ({ doc: item, id: item._id, value: { rev: item._rev } }));
+                    resolve({ total_rows: rows.length, offset: 0, rows: rows });
+                });
+            }
+
+            remove(id, rev) {
+                return new Promise((resolve) => {
+                    let data = JSON.parse(localStorage.getItem(this.storageKey));
+                    data = data.filter(item => item._id !== id);
+                    localStorage.setItem(this.storageKey, JSON.stringify(data));
+                    resolve({ ok: true, id: id, rev: rev });
+                });
+            }
+        }
+
+        // Initialize our data layer engine
+        // const db = new LocalPouchEmulator('uk_stay_tracker');
+
+        // Initialize local PouchDB browser database
+        // 1. Initialize your local on-device database container
+
+        const db = new PouchDB('uk_stay_tracker');
+
+        // 2. UNIVERSAL NETWORK TRANSPARENCY DETECTOR
+        let serverIP = "192.168.1.41"; // Your Mac's Wi-Fi IP (Used by Web, iOS, and Physical Androids)
+
+        if (navigator.userAgent.toLowerCase().includes("android")) {
+            // Check if running inside a virtual emulator environment
+            // Emulators report their hardware model profile as "generic", "emulator", or "sdk"
+            const isEmulator = /emulator|google_sdk|generic|vbox/i.test(navigator.userAgent);
+            
+            if (isEmulator) {
+                console.log("⚡ Android Emulator detected! Using 10.0.2.2 loopback tunnel.");
+                serverIP = "10.0.2.2";
+            } else {
+                console.log("📱 Physical Android Device (Leitz Phone) detected! Connecting directly to Mac IP.");
+            }
+        }
+
+        // REMOTE STORAGE WIRE-UP
+        // Replace 'myadmin' and 'mypassword' with your real Fauxton admin login credentials
+        // Replace '192.168.1.184' with the exact Mac IP address you found in Step 1
+        // FORMAT: const remoteDB = new PouchDB('http://USERNAME:PASSWORD@YOUR_MAC_IP:5984/DATABASE_NAME');
+
+        // const remoteDB = new PouchDB('http://admin:Cdb3579%21@192.168.1.41:5984/uk_stay_tracker');
+
+        // 3. APPLY REMOTE CONNECTION STRING
+        const remoteDB = new PouchDB('http://admin:Cdb3579%21@' + serverIP + ':5984/uk_stay_tracker');
+
+
+        // ==========================================
+        // 2. THE SYNC MATRIX (PUT THIS SECONDFOURTH)
+        // ==========================================
+        db.sync(remoteDB, {
+            live: true,
+            retry: true
+        }).on('change', function (info) {
+            console.log("✔ REPLICATION SUCCESS: Data changed/synced!", info);
+            fetchAndRenderTrips();
+        }).on('paused', function (err) {
+            console.log("ℹ SYNC PAUSED: Waiting for network connection...", err);
+        }).on('active', function () {
+            console.log("⚡ SYNC ACTIVE: Replication channel processing data...");
+        }).on('denied', function (err) {
+            console.error("❌ SYNC DENIED: CouchDB credentials rejected!", err);
+        }).on('error', function (err) {
+            console.error("🚨 CRITICAL SYNC ERROR:", err);
+        });
+
+
+
+        const stayForm = document.getElementById('stay-form');
+        const arrivalInput = document.getElementById('arrival-date');
+        const departureInput = document.getElementById('departure-date');
+        const tripListEle = document.getElementById('trip-list');
+        const totalNightsEle = document.getElementById('total-nights');
+
+        stayForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const arrivalDate = arrivalInput.value;
+            const departureDate = departureInput.value;
+
+            if (!arrivalDate || !departureDate) return;
+
+            if (new Date(departureDate) <= new Date(arrivalDate)) {
+                alert("Departure date must be after the arrival date.");
+                return;
+            }
+
+            const nights = calculateNights(arrivalDate, departureDate);
+
+            // Create a completely separate data object
+            const doc = {
+                _id: 'trip_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7),
+                arrival: arrivalDate,
+                departure: departureDate,
+                nights: nights
+            };
+
+            // Save, then refresh the history list first, and reset the form layout LAST
+            db.put(doc).then(function () {
+                console.log("Document created successfully inside local PouchDB container!");
+                fetchAndRenderTrips();
+                arrivalInput.value = '';
+                departureInput.value = '';
+            }).catch(function (err) {
+                // This alert will pop up on your Mac screen and tell us EXACTLY why it failed!
+                alert("Database insertion rejected: " + err.message + " (" + err.status + ")");
+                console.error("Local save error context:", err);
+            });
+
+        });
+
+
+        function calculateNights(arrival, departure) {
+            const date1 = new Date(arrival + "T00:00:00");
+            const date2 = new Date(departure + "T00:00:00");
+            const diffTime = Math.abs(date2 - date1);
+            return Math.round(diffTime / (1000 * 60 * 60 * 24));
+        }
+
+        function fetchAndRenderTrips() {
+            // 1. Remove descending:true here so the emulator returns a clean, raw array list
+            db.allDocs({ include_docs: true }).then(function (result) {
+                let totalNights = 0;
+                tripListEle.innerHTML = '';
+
+                const trips = result.rows.map(row => row.doc);
+
+                // 2. SORTING LOGIC: Sort entries explicitly by Arrival Date (Latest first)
+                // trips.sort((a, b) => new Date(b.arrival) - new Date(a.arrival));
+                trips.sort((a, b) => new Date(a.arrival) - new Date(b.arrival));
+
+                trips.forEach(function (trip) {
+                    totalNights += trip.nights;
+
+                    const li = document.createElement('li');
+                    li.className = 'trip-item';
+                    li.innerHTML = `
+                        <div class="trip-details">
+                            <div class="trip-nights">${trip.nights} Night${trip.nights > 1 ? 's' : ''}</div>
+                            <div>Arrived: ${formatDate(trip.arrival)}</div>
+                            <div>Left: ${formatDate(trip.departure)}</div>
+                        </div>
+                        <button class="delete-btn" onclick="deleteTrip('${trip._id}', '${trip._rev}')">&times;</button>
+                    `;
+                    tripListEle.appendChild(li);
+                });
+
+                totalNightsEle.textContent = totalNights;
+            }).catch(function (err) {
+                console.error("Error fetching or sorting data:", err);
+            });
+        }
+
+
+
+        window.deleteTrip = function(id, rev) {
+            if (confirm("Delete this log?")) {
+                db.remove(id, rev).then(function () {
+                    fetchAndRenderTrips();
+                });
+            }
+        };
+
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString('en-GB', options);
+        }
+
+        // Render initial local footprint
+        fetchAndRenderTrips();
+    </script>
+</body>
+</html>

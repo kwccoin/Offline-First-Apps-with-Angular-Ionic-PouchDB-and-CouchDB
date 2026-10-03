@@ -1,0 +1,511 @@
+Last login: Sat Oct  3 14:18:33 on ttys002
+ngcchk@MacD250826CS3 ~ % cd /Users/ngcchk/Documents/Github/Offline-First-Apps-with-Angular-Ionic-PouchDB-and-CouchDB/1_self_ukdates_html_etc
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % ls
+1_install and try1.txt			node_modules
+apple-touch-icon-precomposed.png	package-lock.json
+apple-touch-icon.png			package.json
+favicon.ico				pouchdb.min.js.html
+index.html				ukdates1.md
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % node -v
+v24.21.0
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % npx cap add ios
+^C
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % npm cache clean --force
+npm warn using --force Recommended protections disabled.
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % npx cap add ios --verbose
+^C
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % 
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % ./node_modules/.bin/cap add ios --verbose
+^C
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % ./node_modules/.bin/cap add ios --verbosE
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % ./node_modules/.bin/cap add ios --verbose
+^C
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % ./node_modules/.bin/cap add ios --verbose
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % rm -rf ios node_modules package-lock.json
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % npm install @capacitor/core @capacitor/cli @capacitor/ios
+
+npm warn deprecated uuid@7.0.3: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
+
+added 98 packages, and audited 99 packages in 18s
+
+11 packages are looking for funding
+  run `npm fund` for details
+
+3 moderate severity vulnerabilities
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % ./node_modules/.bin/cap add ios --packagemanager spm     
+
+[error] Missing appId for new platform.
+        Please add it in capacitor.config.json or run npx cap init.
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % ./node_modules/.bin/cap init "UK Stay Tracker" "com.yourname.ukstaytracker" --web-dir=www 
+
+⠙ Creating capacitor.config.json in /Users/ngcchk/Documents/Github/Offline-First-Apps-with-Angular-Ionic-PouchDB-and-CouchDB/1_self_ukda✔ Creating capacitor.config.json in /Users/ngcchk/Documents/Github/Offline-First-Apps-with-Angular-Ionic-PouchDB-and-CouchDB/1_self_ukdates_html_etc in 4.12ms
+[success] capacitor.config.json created!
+
+Next steps: 
+https://capacitorjs.com/docs/getting-started#where-to-go-next
+[?] Join the Ionic Community! 💙
+    Connect with millions of developers on the Ionic Forum and get access to live events, news updates, and more.
+✔ Create free Ionic account? … yes
+
+Thank you for helping improve Capacitor by sharing anonymous usage data! 💖
+Information about the data we collect is available on our website: https://capacitorjs.com/docs/next/cli/telemetry
+You can disable telemetry at any time by using the npx cap telemetry off command.%                                                      ngcchk@MacD250826CS3 1_self_ukdates_html_etc % ./node_modules/.bin/cap add ios --packagemanager spm
+
+✔ Adding native Xcode project in ios in 10.90ms
+✔ add in 11.10ms
+[warn] sync could not run--missing www directory.
+[success] ios platform added!
+Follow the Developer Workflow guide to get building:
+https://capacitorjs.com/docs/basics/workflow
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % # Push your index.html into the iOS container files
+./node_modules/.bin/cap sync ios
+
+# Open Xcode automatically on your desktop
+./node_modules/.bin/cap open ios
+
+zsh: command not found: #
+[error] Could not find the web assets directory: ./www.
+        Please create it and make sure it has an index.html file. You can change the path of this directory in
+        capacitor.config.json (webDir option). You may need to compile the web assets for your app (typically npm run
+        build). More info: https://capacitorjs.com/docs/basics/workflow#sync-your-project
+zsh: command not found: #
+✔ Opening the Xcode workspace... in 3.00s
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % mkdir www
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % mv index.html www/
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % # Push your index.html into the iOS container files
+./node_modules/.bin/cap sync ios
+
+# Open Xcode automatically on your desktop
+./node_modules/.bin/cap open ios
+
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % ./node_modules/.bin/cap sync ios
+✔ Copying web assets from www to ios/App/App/public in 4.13ms
+✔ Creating capacitor.config.json in ios/App/App in 737.67μs
+✔ copy ios in 9.44ms
+✔ Updating iOS plugins in 280.75μs
+[info] All Capacitor plugins have a Package.swift file and will be included in Package.swift
+[info] Writing Package.swift
+✔ update ios in 9.98ms
+[info] Sync finished in 0.026s
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % ./node_modules/.bin/cap open ios
+✔ Opening the Xcode workspace... in 3.01s
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % ./node_modules/.bin/cap add android
+^C
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % vim ~/.zschrc
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % source ~/.zschrc 
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % type ~/.zschrc 
+/Users/ngcchk/.zschrc not found
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % ./node_modules/.bin/cap add android
+^C
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % ls 
+1_install and try1.txt			capacitor.config.json			package-lock.json
+1_ukdates1.md				favicon.ico				package.json
+apple-touch-icon-precomposed.png	ios					pouchdb.min.js.html
+apple-touch-icon.png			node_modules				www
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % ls -al
+total 32
+drwxr-xr-x@  15 ngcchk  staff      480  3 Oct 17:13 .
+drwxr-xr-x@  15 ngcchk  staff      480  3 Oct 17:13 ..
+-rw-r--r--@   1 ngcchk  staff     6148  3 Oct 15:35 .DS_Store
+-rw-r--r--@   1 ngcchk  staff   237971  3 Oct 15:19 1_install and try1.txt
+-rw-r--r--    1 ngcchk  staff     1445  3 Oct 13:19 1_ukdates1.md
+-rw-r--r--    1 ngcchk  staff        0  3 Oct 12:36 apple-touch-icon-precomposed.png
+-rw-r--r--    1 ngcchk  staff        0  3 Oct 12:36 apple-touch-icon.png
+-rw-r--r--    1 ngcchk  staff       95  3 Oct 15:53 capacitor.config.json
+-rw-r--r--    1 ngcchk  staff        0  3 Oct 12:36 favicon.ico
+drwxr-xr-x    6 ngcchk  staff      192  3 Oct 17:13 ios
+drwxr-xr-x  157 ngcchk  staff     5024  3 Oct 15:59 node_modules
+-rw-r--r--    1 ngcchk  staff    42808  3 Oct 15:50 package-lock.json
+-rw-r--r--    1 ngcchk  staff      151  3 Oct 13:54 package.json
+-rw-r--r--@   1 ngcchk  staff  1333879  3 Oct 13:10 pouchdb.min.js.html
+drwxr-xr-x    3 ngcchk  staff       96  3 Oct 15:57 www
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % ls www
+index.html
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % ls
+1_install and try1.txt			capacitor.config.json			package-lock.json
+1_ukdates1.md				favicon.ico				package.json
+apple-touch-icon-precomposed.png	ios					pouchdb.min.js.html
+apple-touch-icon.png			node_modules				www
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % ./node_modules/.bin/cap init "UK Stay Tracker" "com.yourname.ukstaytracker" --web-dir=www 
+
+
+
+
+^C
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % ./node_modules/.bin/cap init "UK Stay Tracker" "com.yourname.ukstaytracker" --web-dir=www
+
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % rm -f capacitor.config.json
+
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % ./node_modules/.bin/cap init "UK Stay Tracker" "com.yourname.ukstaytracker" --web-dir=www
+
+^C
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % vim capacitor.config.json
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % ./node_modules/.bin/cap add android
+
+^C
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % rm -rf node_modules package-lock.json && npm install
+
+npm warn deprecated uuid@7.0.3: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
+
+added 98 packages, and audited 99 packages in 29s
+
+11 packages are looking for funding
+  run `npm fund` for details
+
+3 moderate severity vulnerabilities
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % cat capacitor.config.json 
+{
+  "appId": "com.yourname.ukstaytracker",
+  "appName": "UK Stay Tracker",
+  "webDir": "www"
+}
+
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % ./node_modules/.bin/cap add android                 
+
+[error] Could not find the android platform.
+        You must install it in your project first, e.g. w/ npm install @capacitor/android
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % npm install @capacitor/android
+
+⠹
+
+added 1 package, and audited 100 packages in 6s
+
+11 packages are looking for funding
+  run `npm fund` for details
+
+3 moderate severity vulnerabilities
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % 
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % ./node_modules/.bin/cap add android
+
+✔ Adding native android project in android in 24.74ms
+✔ add in 25.00ms
+✔ Copying web assets from www to android/app/src/main/assets/public in 2.66ms
+✔ Creating capacitor.config.json in android/app/src/main/assets in 1.16ms
+✔ copy android in 6.37ms
+✔ Updating Android plugins in 316.04μs
+✔ update android in 7.77ms
+⠼ Syncing Gradle Error running gradle sync Downloading https://services.gradle.org/distributions/gradle-8.14.3-all.zip
+.....................10%.....................20%......................30%.....................40%......................50%.....................60%.....................70%......................80%.....................90%......................100%
+
+Welcome to Gradle 8.14.3!
+
+Here are the highlights of this release:
+ - Java 24 support
+ - GraalVM Native Image toolchain selection
+ - Enhancements to test reporting
+ - Build Authoring improvements
+
+For more details see https://docs.gradle.org/8.14.3/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+BUG! exception in phase 'semantic analysis' in source unit '_BuildScript_' Unsupported class file major version 71
+> Unsupported class file major version 71
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 1m 26s
+
+Unable to infer default Android SDK settings. This is fine, just run npx cap open android and import and sync gradle manually
+✔ Syncing Gradle in 89.47s
+[success] android platform added!
+Follow the Developer Workflow guide to get building:
+https://capacitorjs.com/docs/basics/workflow
+
+
+
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % 
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % 
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % 
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % ./node_modules/.bin/cap sync android
+
+./node_modules/.bin/cap open android
+
+^C
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % ./node_modules/.bin/cap sync android
+^C
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % ls android
+app					gradle					local.properties
+build.gradle				gradle.properties			settings.gradle
+capacitor-cordova-android-plugins	gradlew					variables.gradle
+capacitor.settings.gradle		gradlew.bat
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % rm -rf android/.idea/modules/ android/.gradle/ android/build/
+ngcchk@MacD250826CS3 1_self_ukdates_html_etc % cd android
+ngcchk@MacD250826CS3 android % ./gradlew assembleDebug
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+BUG! exception in phase 'semantic analysis' in source unit '_BuildScript_' Unsupported class file major version 71
+> Unsupported class file major version 71
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 2m 11s
+ngcchk@MacD250826CS3 android % JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home" ./gradlew assembleDebug
+
+Starting a Gradle Daemon, 1 incompatible Daemon could not be reused, use --status for details
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+BUG! exception in phase 'semantic analysis' in source unit '_BuildScript_' Unsupported class file major version 69
+> Unsupported class file major version 69
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 2s
+ngcchk@MacD250826CS3 android % ./gradlew --stop
+
+Stopping Daemon(s)
+2 Daemons stopped
+ngcchk@MacD250826CS3 android % rm -rf .gradle build app/build
+
+ngcchk@MacD250826CS3 android % ./gradlew assembleDebug -Dorg.gradle.java.home="/Applications/Android Studio.app/Contents/jbr/Contents/Home" --no-daemon
+
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.14.3/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+BUG! exception in phase 'semantic analysis' in source unit '_BuildScript_' Unsupported class file major version 69
+> Unsupported class file major version 69
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 2s
+ngcchk@MacD250826CS3 android % # 1. Force the local distribution file to update to a version fully compatible with Java 25 
+./gradlew wrapper --gradle-version 9.2 --distribution-type all
+
+# 2. Stop any existing background daemon loops using old caches
+./gradlew --stop
+
+# 3. Clean out old project build cache folders
+rm -rf .gradle build app/build
+
+# 4. Trigger the compilation process again using the upgraded layout configuration
+./gradlew assembleDebug
+
+zsh: command not found: #
+Starting a Gradle Daemon, 2 stopped Daemons could not be reused, use --status for details
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+BUG! exception in phase 'semantic analysis' in source unit '_BuildScript_' Unsupported class file major version 71
+> Unsupported class file major version 71
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 2s
+zsh: command not found: #
+Stopping Daemon(s)
+1 Daemon stopped
+zsh: command not found: #
+zsh: command not found: #
+Starting a Gradle Daemon, 3 stopped Daemons could not be reused, use --status for details
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+BUG! exception in phase 'semantic analysis' in source unit '_BuildScript_' Unsupported class file major version 71
+> Unsupported class file major version 71
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 2s
+ngcchk@MacD250826CS3 android % ./gradlew wrapper --gradle-version 9.2 --distribution-type all
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+BUG! exception in phase 'semantic analysis' in source unit '_BuildScript_' Unsupported class file major version 71
+> Unsupported class file major version 71
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 516ms
+ngcchk@MacD250826CS3 android % ./gradlew wrapper --gradle-version 9.2 --distribution-type all
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+BUG! exception in phase 'semantic analysis' in source unit '_BuildScript_' Unsupported class file major version 71
+> Unsupported class file major version 71
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 557ms
+ngcchk@MacD250826CS3 android % ./gradlew --stop
+Stopping Daemon(s)
+1 Daemon stopped
+ngcchk@MacD250826CS3 android % rm -rf .gradle build app/build
+ngcchk@MacD250826CS3 android % ./gradlew wrapper --gradle-version 9.2 --distribution-type all
+
+Starting a Gradle Daemon, 4 stopped Daemons could not be reused, use --status for details
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+BUG! exception in phase 'semantic analysis' in source unit '_BuildScript_' Unsupported class file major version 71
+> Unsupported class file major version 71
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 2s
+ngcchk@MacD250826CS3 android % vim gradle/wrapper/gradle-wrapper.properties
+ngcchk@MacD250826CS3 android % rm -rf .gradle build app/build
+ngcchk@MacD250826CS3 android % ./gradlew --stop
+Downloading https://services.gradle.org/distributions/gradle-9.29.29.29.29.29.29.29.29.2-all.zip
+
+Exception in thread "main" java.io.FileNotFoundException: https://downloads.gradle.org/distributions/gradle-9.29.29.29.29.29.29.29.29.2-all.zip
+	at java.base/sun.net.www.protocol.http.HttpURLConnection.getInputStream0(HttpURLConnection.java:1727)
+	at java.base/sun.net.www.protocol.http.HttpURLConnection.getInputStream(HttpURLConnection.java:1311)
+	at java.base/sun.net.www.protocol.https.HttpsURLConnectionImpl.getInputStream(HttpsURLConnectionImpl.java:223)
+	at org.gradle.wrapper.Install.forceFetch(SourceFile:2)
+	at org.gradle.wrapper.Install$1.call(SourceFile:8)
+	at org.gradle.wrapper.GradleWrapperMain.main(SourceFile:67)
+ngcchk@MacD250826CS3 android % ./gradlew assembleDebug
+Downloading https://services.gradle.org/distributions/gradle-9.29.29.29.29.29.29.29.29.2-all.zip
+
+Exception in thread "main" java.io.FileNotFoundException: https://downloads.gradle.org/distributions/gradle-9.29.29.29.29.29.29.29.29.2-all.zip
+	at java.base/sun.net.www.protocol.http.HttpURLConnection.getInputStream0(HttpURLConnection.java:1727)
+	at java.base/sun.net.www.protocol.http.HttpURLConnection.getInputStream(HttpURLConnection.java:1311)
+	at java.base/sun.net.www.protocol.https.HttpsURLConnectionImpl.getInputStream(HttpsURLConnectionImpl.java:223)
+	at org.gradle.wrapper.Install.forceFetch(SourceFile:2)
+	at org.gradle.wrapper.Install$1.call(SourceFile:8)
+	at org.gradle.wrapper.GradleWrapperMain.main(SourceFile:67)
+ngcchk@MacD250826CS3 android % vim gradle/wrapper/gradle-wrapper.properties
+ngcchk@MacD250826CS3 android % ./gradlew assembleDebug                     
+Downloading https://services.gradle.org/distributions/gradle-8.10.2-all.zip
+.....................10%......................20%......................30%.....................40%......................50%......................60%......................70%.....................80%......................90%......................100%
+
+Welcome to Gradle 8.10.2!
+
+Here are the highlights of this release:
+ - Support for Java 23
+ - Faster configuration cache
+ - Better configuration cache reports
+
+For more details see https://docs.gradle.org/8.10.2/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+BUG! exception in phase 'semantic analysis' in source unit '_BuildScript_' Unsupported class file major version 71
+> Unsupported class file major version 71
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 1m 45s
+ngcchk@MacD250826CS3 android % vim gradle/wrapper/gradle-wrapper.properties
+ngcchk@MacD250826CS3 android % rm -rf .gradle build app/build
+ngcchk@MacD250826CS3 android % ./gradlew --stop
+Downloading https://services.gradle.org/distributions/gradle-8.11-all.zip
+.....................10%......................20%......................30%......................40%......................50%......................60%......................70%......................80%......................90%......................100%
+
+
+Welcome to Gradle 8.11!
+
+Here are the highlights of this release:
+ - Parallel load and store for Configuration Cache
+ - Java compilation errors at the end of the build output
+ - Consolidated report for warnings and deprecations
+
+For more details see https://docs.gradle.org/8.11/release-notes.html
+
+No Gradle daemons are running.
+ngcchk@MacD250826CS3 android % 
+ngcchk@MacD250826CS3 android % ./gradlew assembleDebug
+^C%                                                                                                                       ngcchk@MacD250826CS3 android % killall -9 java 2>/dev/null || true
+
+ngcchk@MacD250826CS3 android % ./gradlew assembleDebug --no-daemon
+
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.11/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+BUG! exception in phase 'semantic analysis' in source unit '_BuildScript_' Unsupported class file major version 71
+> Unsupported class file major version 71
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 1m 51s
+ngcchk@MacD250826CS3 android % ./gradlew assembleDebug -Dorg.gradle.java.home="/Applications/Android Studio.app/Contents/jbr/Contents/Home" --no-daemon --console=plain
+
+^C%                                                                                                                       ngcchk@MacD250826CS3 android % killall -9 java 2>/dev/null || true
+
+ngcchk@MacD250826CS3 android % rm -rf .gradle build app/build     
+ngcchk@MacD250826CS3 android % ./gradlew assembleDebug -Dorg.gradle.java.home="/Applications/Android Studio.app/Contents/jbr/Contents/Home" --no-daemon --console=plain
+
+^C%                                                                                                                       ngcchk@MacD250826CS3 android % cd ~  
+ngcchk@MacD250826CS3 ~ % ls 1*
+zsh: no matches found: 1*
+ngcchk@MacD250826CS3 ~ % 

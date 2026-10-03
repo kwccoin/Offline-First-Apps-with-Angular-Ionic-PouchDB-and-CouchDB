@@ -1,0 +1,43 @@
+Last login: Sat Oct  3 15:38:58 on ttys003
+ngcchk@MacD250826CS3 ~ % cd 2_self_ukdates_html_etc 
+ngcchk@MacD250826CS3 2_self_ukdates_html_etc % cd android 
+ngcchk@MacD250826CS3 android % cd app/src/main/assets/public
+ngcchk@MacD250826CS3 public % ;s
+zsh: command not found: s
+ngcchk@MacD250826CS3 public % ls
+cordova_plugins.js	cordova.js		index.html
+ngcchk@MacD250826CS3 public % cd ~/2_self_ukdates_html_etc 
+ngcchk@MacD250826CS3 2_self_ukdates_html_etc % ./node_modules/.bin/cap --version'
+quote> 
+quote> 
+ngcchk@MacD250826CS3 2_self_ukdates_html_etc % ./node_modules/.bin/cap --version
+8.5.2
+ngcchk@MacD250826CS3 2_self_ukdates_html_etc % ./node_modules/.bin/cap sync ios
+✔ Copying web assets from www to ios/App/App/public in 3.96ms
+✔ Creating capacitor.config.json in ios/App/App in 1.26ms
+✔ copy ios in 9.14ms
+✔ Updating iOS plugins in 309.63μs
+[info] All Capacitor plugins have a Package.swift file and will be included in
+       Package.swift
+[info] Writing Package.swift
+✔ update ios in 12.03ms
+[info] Sync finished in 0.029s
+ngcchk@MacD250826CS3 2_self_ukdates_html_etc % ./node_modules/.bin/cap open ios
+✔ Opening the Xcode workspace... in 3.01s
+ngcchk@MacD250826CS3 2_self_ukdates_html_etc % ls         
+1_install and try1.txt			ios
+1_ukdates1.md				node_modules
+android					package-lock.json
+apple-touch-icon-precomposed.png	package.json
+apple-touch-icon.png			pouchdb.min.js.html
+capacitor.config.json			www
+favicon.ico
+ngcchk@MacD250826CS3 2_self_ukdates_html_etc % cd www
+ngcchk@MacD250826CS3 www % python -m http.server 8000
+zsh: command not found: python
+ngcchk@MacD250826CS3 www % python3 -m http.server 8000
+Serving HTTP on :: port 8000 (http://[::]:8000/) ...
+::1 - - [03/Oct/2026 21:06:04] "GET / HTTP/1.1" 200 -
+::1 - - [03/Oct/2026 21:06:04] code 404, message File not found
+::1 - - [03/Oct/2026 21:06:04] "GET /favicon.ico HTTP/1.1" 404 -
+
