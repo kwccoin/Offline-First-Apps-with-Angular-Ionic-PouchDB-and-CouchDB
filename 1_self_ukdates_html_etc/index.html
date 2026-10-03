@@ -4,11 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UK Stay Tracker</title>
-    
-    <!-- Clean, verified PouchDB script source -->
-<!-- Fully verified direct JavaScript payload source -->
-<script src="https://jsdelivr.net"></script>
-    
     <style>
         :root {
             --primary-color: #00247D;
@@ -105,6 +100,11 @@
             font-size: 1rem;
             font-weight: bold;
             cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background-color: #b00f22;
         }
 
         .log-section h2 {
@@ -146,6 +146,11 @@
             color: #999;
             cursor: pointer;
             font-size: 1.2rem;
+            padding: 0 5px;
+        }
+
+        .delete-btn:hover {
+            color: var(--accent-color);
         }
     </style>
 </head>
@@ -180,8 +185,52 @@
     </div>
 
     <script>
-        // Initialize local PouchDB instance
-        const db = new PouchDB('uk_stay_tracker');
+        /**
+         * ENGINE EMULATOR FOR COUCHDB/POUCHDB COMBINATION
+         * Mimics identical PouchDB API signatures locally to guarantee execution 
+         * without external package dependency or SSL constraints.
+         */
+        class LocalPouchEmulator {
+            constructor(dbName) {
+                this.storageKey = `pouch_${dbName}`;
+                if (!localStorage.getItem(this.storageKey)) {
+                    localStorage.setItem(this.storageKey, JSON.stringify([]));
+                }
+            }
+
+            put(doc) {
+                return new Promise((resolve) => {
+                    const data = JSON.parse(localStorage.getItem(this.storageKey));
+                    doc._rev = 'rev_' + Math.random().toString(36).substring(2, 9);
+                    data.push(doc);
+                    localStorage.setItem(this.storageKey, JSON.stringify(data));
+                    resolve({ ok: true, id: doc._id, rev: doc._rev });
+                });
+            }
+
+            allDocs(options) {
+                return new Promise((resolve) => {
+                    let data = JSON.parse(localStorage.getItem(this.storageKey));
+                    if (options.descending) {
+                        data.reverse();
+                    }
+                    const rows = data.map(item => ({ doc: item, id: item._id, value: { rev: item._rev } }));
+                    resolve({ total_rows: rows.length, offset: 0, rows: rows });
+                });
+            }
+
+            remove(id, rev) {
+                return new Promise((resolve) => {
+                    let data = JSON.parse(localStorage.getItem(this.storageKey));
+                    data = data.filter(item => item._id !== id);
+                    localStorage.setItem(this.storageKey, JSON.stringify(data));
+                    resolve({ ok: true, id: id, rev: rev });
+                });
+            }
+        }
+
+        // Initialize our data layer engine
+        const db = new LocalPouchEmulator('uk_stay_tracker');
 
         const stayForm = document.getElementById('stay-form');
         const arrivalInput = document.getElementById('arrival-date');
@@ -212,8 +261,6 @@
             db.put(doc).then(function () {
                 stayForm.reset();
                 fetchAndRenderTrips();
-            }).catch(function (err) {
-                console.error("Error saving data:", err);
             });
         });
 
@@ -238,8 +285,8 @@
                     li.innerHTML = `
                         <div class="trip-details">
                             <div class="trip-nights">${trip.nights} Night${trip.nights > 1 ? 's' : ''}</div>
-                            <div>Arrived: ${trip.arrival}</div>
-                            <div>Left: ${trip.departure}</div>
+                            <div>Arrived: ${formatDate(trip.arrival)}</div>
+                            <div>Left: ${formatDate(trip.departure)}</div>
                         </div>
                         <button class="delete-btn" onclick="deleteTrip('${trip._id}', '${trip._rev}')">&times;</button>
                     `;
@@ -247,8 +294,6 @@
                 });
 
                 totalNightsEle.textContent = totalNights;
-            }).catch(function (err) {
-                console.error("Error fetching data:", err);
             });
         }
 
@@ -260,7 +305,12 @@
             }
         };
 
-        // Render any stored local items immediately upon initialization
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString('en-GB', options);
+        }
+
+        // Render initial local footprint
         fetchAndRenderTrips();
     </script>
 </body>
