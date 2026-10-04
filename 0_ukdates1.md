@@ -61,7 +61,7 @@ Why this fixes it completely:
 The uchg (user unchangeable) system flag locks the file at the kernel layer. The next time you run ./node_modules/.bin/cap sync, Capacitor will try to overwrite the file, find that it is locked by macOS, give up, and safely skip past it—leaving your custom androidScheme and server properties completely intact!
 (Note: If you ever want to change your app name or appId in the future, you can easily unlock the file by opening your terminal and running chflags nouchg capacitor.config.json).
 
-Otherwise has to keep on changing it after sync to 
+#h3 Otherwise has to keep on changing it after sync to 
 
 {
   "appId": "com.yourname.ukstaytracker",
@@ -73,3 +73,5 @@ Otherwise has to keep on changing it after sync to
     "iosScheme": "http"
   }
 }
+
+#h3 cut and paste the above to capactior.config.json

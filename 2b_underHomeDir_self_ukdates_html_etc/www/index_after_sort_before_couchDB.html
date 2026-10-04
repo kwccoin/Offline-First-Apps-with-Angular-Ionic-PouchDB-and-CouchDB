@@ -158,7 +158,7 @@
 
     <div class="app-container">
         <header>
-            <h1>UK Stay Tracker</h1>
+            <h1>UK Stay Tracker Sort Local 2a</h1>
         </header>
 
         <div class="stats-box">
@@ -280,12 +280,18 @@
         }
 
         function fetchAndRenderTrips() {
-            db.allDocs({ include_docs: true, descending: true }).then(function (result) {
+            // 1. Remove descending:true here so the emulator returns a clean, raw array list
+            db.allDocs({ include_docs: true }).then(function (result) {
                 let totalNights = 0;
                 tripListEle.innerHTML = '';
 
-                result.rows.forEach(function (row) {
-                    const trip = row.doc;
+                const trips = result.rows.map(row => row.doc);
+
+                // 2. SORTING LOGIC: Sort entries explicitly by Arrival Date (Latest first)
+                // trips.sort((a, b) => new Date(b.arrival) - new Date(a.arrival));
+                trips.sort((a, b) => new Date(a.arrival) - new Date(b.arrival));
+
+                trips.forEach(function (trip) {
                     totalNights += trip.nights;
 
                     const li = document.createElement('li');
@@ -302,8 +308,12 @@
                 });
 
                 totalNightsEle.textContent = totalNights;
+            }).catch(function (err) {
+                console.error("Error fetching or sorting data:", err);
             });
         }
+
+
 
         window.deleteTrip = function(id, rev) {
             if (confirm("Delete this log?")) {

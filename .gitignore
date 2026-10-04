@@ -10,3 +10,5 @@
 /2b_underHomeDir_self_ukdates_html_etc/android
 /2b_underHomeDir_self_ukdates_html_etc/ios
 /2b_underHomeDir_self_ukdates_html_etc/node_modules
+.DS_Store
+offline-first-apps-angular-ionic-couchdb-main/.DS_Store

@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Load the local database engine file directly from memory -->
+    <script src="pouchdb.min.js"></script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UK Stay Tracker</title>
@@ -158,7 +161,7 @@
 
     <div class="app-container">
         <header>
-            <h1>UK Stay Tracker</h1>
+            <h1>UK Stay Tracker Sort Remote 3c</h1>
         </header>
 
         <div class="stats-box">
@@ -230,7 +233,40 @@
         }
 
         // Initialize our data layer engine
-        const db = new LocalPouchEmulator('uk_stay_tracker');
+        // const db = new LocalPouchEmulator('uk_stay_tracker');
+
+        // Initialize local PouchDB browser database
+        const db = new PouchDB('uk_stay_tracker');
+
+        // REMOTE STORAGE WIRE-UP
+        // Replace 'myadmin' and 'mypassword' with your real Fauxton admin login credentials
+        // Replace '192.168.1.184' with the exact Mac IP address you found in Step 1
+        // FORMAT: const remoteDB = new PouchDB('http://USERNAME:PASSWORD@YOUR_MAC_IP:5984/DATABASE_NAME');
+
+        const remoteDB = new PouchDB('http://admin:Cdb3579%21@192.168.1.41:5984/uk_stay_tracker');
+
+
+        
+        // ==========================================
+        // 2. THE SYNC MATRIX (PUT THIS SECONDFOURTH)
+        // ==========================================
+        db.sync(remoteDB, {
+            live: true,
+            retry: true
+        }).on('change', function (info) {
+            console.log("✔ REPLICATION SUCCESS: Data changed/synced!", info);
+            fetchAndRenderTrips();
+        }).on('paused', function (err) {
+            console.log("ℹ SYNC PAUSED: Waiting for network connection...", err);
+        }).on('active', function () {
+            console.log("⚡ SYNC ACTIVE: Replication channel processing data...");
+        }).on('denied', function (err) {
+            console.error("❌ SYNC DENIED: CouchDB credentials rejected!", err);
+        }).on('error', function (err) {
+            console.error("🚨 CRITICAL SYNC ERROR:", err);
+        });
+
+
 
         const stayForm = document.getElementById('stay-form');
         const arrivalInput = document.getElementById('arrival-date');
@@ -263,12 +299,16 @@
 
             // Save, then refresh the history list first, and reset the form layout LAST
             db.put(doc).then(function () {
+                console.log("Document created successfully inside local PouchDB container!");
                 fetchAndRenderTrips();
-                
-                // Clear inputs manually without triggering form event loops
                 arrivalInput.value = '';
                 departureInput.value = '';
+            }).catch(function (err) {
+                // This alert will pop up on your Mac screen and tell us EXACTLY why it failed!
+                alert("Database insertion rejected: " + err.message + " (" + err.status + ")");
+                console.error("Local save error context:", err);
             });
+
         });
 
 
@@ -280,12 +320,18 @@
         }
 
         function fetchAndRenderTrips() {
-            db.allDocs({ include_docs: true, descending: true }).then(function (result) {
+            // 1. Remove descending:true here so the emulator returns a clean, raw array list
+            db.allDocs({ include_docs: true }).then(function (result) {
                 let totalNights = 0;
                 tripListEle.innerHTML = '';
 
-                result.rows.forEach(function (row) {
-                    const trip = row.doc;
+                const trips = result.rows.map(row => row.doc);
+
+                // 2. SORTING LOGIC: Sort entries explicitly by Arrival Date (Latest first)
+                // trips.sort((a, b) => new Date(b.arrival) - new Date(a.arrival));
+                trips.sort((a, b) => new Date(a.arrival) - new Date(b.arrival));
+
+                trips.forEach(function (trip) {
                     totalNights += trip.nights;
 
                     const li = document.createElement('li');
@@ -302,8 +348,12 @@
                 });
 
                 totalNightsEle.textContent = totalNights;
+            }).catch(function (err) {
+                console.error("Error fetching or sorting data:", err);
             });
         }
+
+
 
         window.deleteTrip = function(id, rev) {
             if (confirm("Delete this log?")) {
