@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Load the local database engine file directly from memory -->
+    <script src="pouchdb.min.js"></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UK Stay Tracker</title>
+    <style>
+        :root {
+            --primary-color: #00247D;
+            --accent-color: #CF142B;
+            --bg-color: #f4f6f9;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 500px;
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+
+        .stats-box {
+            background: linear-gradient(135deg, var(--primary-color), #0033aa);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .stats-box span {
+            display: block;
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        input[type="date"] {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1rem;
+            width: 100%;
+        }
+
+        button {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background-color: #b00f22;
+        }
+
+        .log-section h2 {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .trip-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .trip-item {
+            background: #f9f9f9;
+            padding: 12px;
+            border-radius: 6px;
+            border-left: 4px solid var(--primary-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .trip-details div {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .trip-nights {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0 5px;
+        }
+
+        .delete-btn:hover {
+            color: var(--accent-color);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app-container">
+        <header>
+            <h1>UK Stay Tracker Sort H5a</h1>
+        </header>
+
+        <div class="stats-box">
+            <span id="total-nights">0</span>
+            Total Nights in the UK
+        </div>
+
+        <!-- Visual Visa Limit Alert Status Banner Container -->
+        <div id="status-banner" class="status-banner"
+            style="padding: 10px; border-radius: 6px; text-align: center; font-weight: bold; font-size: 0.9rem; margin-bottom: 20px; display: none;">
+        </div>
+
+        <!-- App Control Dashboard Panels -->
+        <div class="control-panel"
+            style="margin-bottom: 20px; width: 100%; display: flex; flex-direction: column; gap: 10px;">
+            <!-- Active User Selector -->
+            <div class="control-row"
+                style="display: flex; gap: 10px; justify-content: space-between; align-items: center;">
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+                    <label for="active-person" style="font-weight: 600; font-size: 0.85rem; color: #555;">Active
+                        Profile</label>
+                    <select id="active-person"
+                        style="padding: 8px; border-radius: 6px; border: 1px solid #ccc; font-size: 0.9rem; background: #fff; width: 100%;"></select>
+                </div>
+                <!-- Add New Name Trigger -->
+                <button type="button" id="add-person-btn"
+                    style="background: var(--primary-color); padding: 8px 12px; margin-top: 20px; border-radius: 6px; color: #fff; font-size: 0.85rem; border: none; font-weight: bold; cursor: pointer;">+
+                    New User</button>
+            </div>
+
+            <!-- Active UK Tax Year Selection Strip -->
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+                <label for="active-tax-year" style="font-weight: 600; font-size: 0.85rem; color: #555;">Calculation
+                    Window (6 Apr – 5 Apr)</label>
+                <select id="active-tax-year"
+                    style="padding: 8px; border-radius: 6px; border: 1px solid #ccc; font-size: 0.9rem; background: #fff; width: 100%;"></select>
+            </div>
+
+            <!-- Toggle Configurations Drawer Link -->
+            <a href="#" id="toggle-settings-link"
+                style="font-size: 0.8rem; color: var(--primary-color); text-decoration: underline; font-weight: 600; text-align: right; margin-top: 4px;">Show
+                Server Configurations</a>
+
+            <!-- Hidden Server IP Properties Drawer -->
+            <div id="settings-drawer"
+                style="display: none; background: #eee; padding: 12px; border-radius: 8px; border: 1px solid #ddd; flex-direction: column; gap: 10px; margin-top: 5px;">
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <label for="config-server-ip" style="font-weight: 600; font-size: 0.8rem; color: #444;">Target
+                        Server IP Address</label>
+                    <input type="text" id="config-server-ip" placeholder="e.g., 192.168.1.246"
+                        style="padding: 8px; border-radius: 6px; border: 1px solid #ccc; font-size: 0.9rem;">
+                </div>
+                <button type="button" id="save-config-btn"
+                    style="background: var(--success-color); padding: 8px; border-radius: 6px; color: white; border: none; font-size: 0.85rem; font-weight: bold;">Save
+                    & Apply Settings</button>
+            </div>
+        </div>
+
+
+        <form id="stay-form">
+            <div class="form-group">
+                <label for="arrival-date">Arrival Date</label>
+                <input type="date" id="arrival-date" required>
+            </div>
+            <div class="form-group">
+                <label for="departure-date">Departure Date</label>
+                <input type="date" id="departure-date" required>
+            </div>
+            <div class="form-group" style="display: flex; flex-direction: column; gap: 5px;">
+                <label for="trip-remark" style="font-weight: 600; font-size: 0.9rem;">Remark / Note</label>
+                <input type="text" id="trip-remark" placeholder="e.g., London Vacation, Border Control Check"
+                    style="padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 1rem; width: 100%;">
+            </div>
+
+            <button type="submit">Log Stay</button>
+        </form>
+
+        <div class="log-section">
+            <div class="log-header"
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 5px; border-bottom: 1px solid #ddd;">
+                <h2 style="font-size: 1.1rem; color: #555;">History</h2>
+                <button type="button" id="sort-toggle-btn"
+                    style="background-color: transparent; color: #00247D; border: 1px solid #00247D; padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                    Arrival <span id="sort-direction-icon">↓</span>
+                </button>
+            </div>
+            <ul id="trip-list" class="trip-list"></ul>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // 1. CORE SYSTEM STORAGE INITIALIZATION KEYS
+        // ==========================================
+        let savedPeople = ["Dennis", "Sarah"];
+        let defaultPerson = localStorage.getItem('tracker_active_person') || "Dennis";
+        let savedServerIP = localStorage.getItem('tracker_server_ip') || "192.168.1.246";
+        let isSortDescending = true;
+        let db = null;
+        let remoteDB = null;
+        let syncHandler = null;
+        // ==========================================
+        // 2. UI ELEMENT HOOKS LOOKUP REGISTER
+        // ==========================================
+        const stayForm = document.getElementById('stay-form');
+        const arrivalInput = document.getElementById('arrival-date');
+        const departureInput = document.getElementById('departure-date');
+        const remarkInput = document.getElementById('trip-remark');
+        const tripListEle = document.getElementById('trip-list');
+        const totalNightsEle = document.getElementById('total-nights');
+        const personSelect = document.getElementById('active-person');
+        const taxYearSelect = document.getElementById('active-tax-year');
+        const addPersonBtn = document.getElementById('add-person-btn');
+        const toggleSettingsLink = document.getElementById('toggle-settings-link');
+        const settingsDrawer = document.getElementById('settings-drawer');
+        const configServerIP = document.getElementById('config-server-ip');
+        const saveConfigBtn = document.getElementById('save-config-btn');
+        const sortToggleBtn = document.getElementById('sort-toggle-btn');
+        const sortDirectionIcon = document.getElementById('sort-direction-icon');
+        // Set maximum calendar selection boundaries
+        const todayStr = new Date().toISOString().split('T');
+        if (arrivalInput) arrivalInput.max = todayStr;
+        if (departureInput) departureInput.max = todayStr;
+        // ==========================================
+        // 3. DROPDOWN POPULATION RENDERERS
+        // ==========================================
+        function populatePeopleDropdown() {
+            if (!personSelect) return;
+            const currentActive = personSelect.value || defaultPerson;
+            personSelect.innerHTML = '';
+            const allOpt = document.createElement('option');
+            allOpt.value = "ALL";
+            allOpt.textContent = "All Profiles (Master Overview)";
+            if (currentActive === "ALL") allOpt.selected = true;
+            personSelect.appendChild(allOpt);
+            savedPeople.forEach(p => {
+                const opt = document.createElement('option');
+                opt.value = p;
+                opt.textContent = p;
+                if (p === currentActive) opt.selected = true;
+                personSelect.appendChild(opt);
+            });
+        }
+        function populateTaxYearsDropdown() {
+            if (!taxYearSelect) return;
+            taxYearSelect.innerHTML = '';
+            const allOpt = document.createElement('option');
+            allOpt.value = "ALL";
+            allOpt.textContent = "All Historic Records (Lifetime Total)";
+            taxYearSelect.appendChild(allOpt);
+            for (let y = 2027; y >= 2020; y--) {
+                const opt = document.createElement('option');
+                const nextYearShort = (y + 1).toString().substring(2);
+                opt.value = y.toString();
+                opt.textContent = "UK Tax Year: " + y + " / " + nextYearShort;
+                if (y === 2026) opt.selected = true;
+                taxYearSelect.appendChild(opt);
+            }
+        }
+        function formatDate(dateString) {
+            return new Date(dateString).toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' });
+        }
+        function updateVisaVisualBanner(totalNights) {
+            const statusBanner = document.getElementById('status-banner');
+            if (!statusBanner) return;
+            if (totalNights === 0) { statusBanner.style.display = "none"; return; }
+            statusBanner.style.display = "block";
+            statusBanner.style.padding = "10px";
+            statusBanner.style.borderRadius = "6px";
+            statusBanner.style.textAlign = "center";
+            statusBanner.style.fontWeight = "bold";
+            statusBanner.style.fontSize = "0.9rem";
+            statusBanner.style.marginBottom = "20px";
+            if (totalNights < 70) {
+                statusBanner.style.backgroundColor = "#e8f5e9"; statusBanner.style.color = "#2e7d32"; statusBanner.textContent = "✔ Visa Allowance: Status Safe";
+            } else if (totalNights >= 70 && totalNights < 90) {
+                statusBanner.style.backgroundColor = "#fff3e0"; statusBanner.style.color = "#f57c00"; statusBanner.textContent = "⚠ Warning: Approaching 90-Day Limit";
+            } else {
+                statusBanner.style.backgroundColor = "#ffebee"; statusBanner.style.color = "#c62828"; statusBanner.textContent = "🚨 Alert: 90-Day Visa Limit Exceeded!";
+            }
+        }
+        // ==========================================
+        // 4. DATABASE & PROFILE REPLICATION FACTORY
+        // ==========================================
+        function syncUserProfileList() {
+            const configId = "config_shared_profile_manifest";
+            db.get(configId).then(function (doc) {
+                console.log("✈ Shared user profiles loaded from network:", doc.names);
+                savedPeople = doc.names;
+                populatePeopleDropdown();
+                fetchAndRenderTrips();
+            }).catch(function (err) {
+                if (err.status === 404) {
+                    const initialConfigDoc = { _id: configId, names: ["Dennis", "Sarah"] };
+                    db.put(initialConfigDoc).then(function () {
+                        populatePeopleDropdown();
+                        fetchAndRenderTrips();
+                    }).catch(function (e) { console.error(e); });
+                }
+            });
+        }
+        function initializeDatabaseForProfile(profileName) {
+            if (syncHandler) {
+                syncHandler.cancel();
+                console.log("🛑 Active background synchronization pipeline terminated.");
+            }
+            let cleanName = profileName ? profileName.trim() : "Dennis";
+            if (cleanName === "ALL" || cleanName === "") {
+                cleanName = "Dennis";
+            }
+            const cleanDbSlug = cleanName.toLowerCase().replace(/[^a-z0-9]/g, '');
+            const databaseName = "uk_stay_tracker" + cleanDbSlug;
+            console.log("🎲 Initializing database path wrapper: " + databaseName);
+            // Multi-Platform Network Detector
+            let targetServerIP = savedServerIP;
+            if (navigator.userAgent.toLowerCase().includes("android")) {
+                if (/emulator|google_sdk|generic|vbox/i.test(navigator.userAgent)) {
+                    targetServerIP = "10.0.2.2";
+                }
+            }
+            db = new PouchDB(databaseName);
+            remoteDB = new PouchDB('http://admin:Cdb3579%21@' + targetServerIP + ':5984/' + databaseName);
+            syncHandler = db.sync(remoteDB, { live: true, retry: true })
+                .on('change', function () { fetchAndRenderTrips(); })
+                .on('error', function (err) { console.log("ℹ Sync channel notice: ", err.message); });
+            syncUserProfileList();
+        }
+        // ==========================================
+        // 5. STRICTOR SHIELD FILTER DATA RENDERER
+        // ==========================================
+        function fetchAndRenderTrips() {
+            if (!tripListEle || !totalNightsEle) return;
+            const chosenTaxYear = taxYearSelect.value;
+            const currentSelection = personSelect.value || defaultPerson;
+            db.allDocs({ include_docs: true }).then(function (result) {
+                let totalNights = 0;
+                tripListEle.innerHTML = '';
+                const rawTrips = result.rows.map(row => row.doc).filter(t => t && t._id && !t._id.startsWith('config_'));
+
+                // SHIELD FILTER BLOCK: Enforces absolute data isolation on the frontend screen layer
+                const userTrips = rawTrips.filter(t => {
+                    if (currentSelection === "ALL") return true;
+                    return (t.person || "Dennis") === currentSelection;
+                });
+                if (userTrips.length === 0) {
+                    tripListEle.innerHTML = '<div class="empty-state">No stays logged for ' + currentSelection + ' yet.</div>';
+                    totalNightsEle.textContent = '0';
+                    updateVisaVisualBanner(0);
+                    return;
+                }
+                if (isSortDescending) {
+                    userTrips.sort((a, b) => new Date(b.arrival) - new Date(a.arrival));
+                } else {
+                    userTrips.sort((a, b) => new Date(a.arrival) - new Date(b.arrival));
+                }
+                userTrips.forEach(function (trip) {
+                    let calculatedNightsDisplay = trip.nights;
+                    if (chosenTaxYear !== "ALL") {
+                        const startYear = parseInt(chosenTaxYear);
+                        const taxStartBoundary = new Date(startYear, 3, 6);
+                        const taxEndBoundary = new Date(startYear + 1, 3, 5);
+                        const tripArr = new Date(trip.arrival + "T00:00:00");
+                        const tripDep = new Date(trip.departure + "T00:00:00");
+                        if (tripDep < taxStartBoundary || tripArr > taxEndBoundary) {
+                            calculatedNightsDisplay = 0;
+                        } else {
+                            const activeArrival = tripArr < taxStartBoundary ? taxStartBoundary : tripArr;
+                            const activeDeparture = tripDep > taxEndBoundary ? taxEndBoundary : tripDep;
+                            calculatedNightsDisplay = Math.round(Math.abs(activeDeparture - activeArrival) / (1000 * 60 * 60 * 24));
+                        }
+                    }
+                    if (chosenTaxYear === "ALL" || calculatedNightsDisplay > 0) {
+                        totalNights += calculatedNightsDisplay;
+                    }
+                    let remarkHtml = trip.remark ? '<div class="trip-note" style="margin-top: 4px; font-style: italic; color: #555; font-size: 0.8rem;">Note: ' + trip.remark + '</div>' : '';
+                    let boundaryInfoHtml = (chosenTaxYear !== "ALL" && calculatedNightsDisplay !== trip.nights && calculatedNightsDisplay > 0) ? '<div style="color: #f57c00; font-size: 0.75rem; font-weight: 600;">⚠️ Truncated: (' + calculatedNightsDisplay + ' of ' + trip.nights + ' nights)</div>' : '';
+                    // FIXED: Notice the backslash escaped quotation marks wrapping your variable paths safely
+                    const li = document.createElement('li');
+                    li.className = 'trip-item';
+                    li.innerHTML = [
+                        '<div class="trip-details">',
+                        '<div class="trip-nights">' + trip.nights + ' Night' + (trip.nights > 1 ? 's' : '') + (currentSelection === "ALL" ? ' <span style="font-size:0.75rem; color:#666;">(' + (trip.person || "Dennis") + ')</span>' : '') + '</div>',
+                        '<div>Arrived: ' + formatDate(trip.arrival) + '</div>',
+                        '<div>Left: ' + formatDate(trip.departure) + '</div>',
+                        remarkHtml,
+                        boundaryInfoHtml,
+                        '</div>',
+                        '<button class="delete-btn" onclick="deleteTrip(\'' + trip._id + '\', \'' + trip._rev + '\')">&times;</button>'
+                    ].join('');
+
+                    if (chosenTaxYear === "ALL" || calculatedNightsDisplay > 0 || (new Date(trip.departure + "T00:00:00") >= new Date(parseInt(chosenTaxYear), 3, 6) && new Date(trip.arrival + "T00:00:00") <= new Date(parseInt(chosenTaxYear) + 1, 3, 5))) {
+                        tripListEle.appendChild(li);
+                    }
+                });
+                totalNightsEle.textContent = totalNights;
+                updateVisaVisualBanner(totalNights);
+            }).catch(function (err) { console.error(err); });
+        }
+        // ==========================================
+        // 6. FORM & INTERACTIVE WIDGET LISTENERS
+        // ==========================================
+        if (arrivalInput) {
+            arrivalInput.addEventListener('input', function () {
+                if (arrivalInput.value && departureInput) {
+                    departureInput.value = arrivalInput.value;
+                    departureInput.setAttribute('min', arrivalInput.value);
+                    departureInput.min = arrivalInput.value;
+                }
+            });
+        }
+        if (sortToggleBtn) {
+            sortToggleBtn.addEventListener('click', function () {
+                isSortDescending = !isSortDescending;
+                if (sortDirectionIcon) sortDirectionIcon.textContent = isSortDescending ? '↓' : '↑';
+                fetchAndRenderTrips();
+            });
+        }
+        if (personSelect) {
+            personSelect.addEventListener('change', function () {
+                defaultPerson = personSelect.value;
+                localStorage.setItem('tracker_active_person', defaultPerson);
+                initializeDatabaseForProfile(defaultPerson);
+            });
+        }
+        if (taxYearSelect) {
+            taxYearSelect.addEventListener('change', function () { fetchAndRenderTrips(); });
+        }
+        if (addPersonBtn) {
+            addPersonBtn.addEventListener('click', function () {
+                const rawName = prompt("Enter traveller profile name:");
+                if (!rawName) return;
+                const cleanName = rawName.trim().charAt(0).toUpperCase() + rawName.trim().slice(1).toLowerCase();
+                if (cleanName && !savedPeople.includes(cleanName)) {
+                    savedPeople.push(cleanName);
+                    defaultPerson = cleanName;
+                    localStorage.setItem('tracker_active_person', defaultPerson);
+                    const configId = "config_shared_profile_manifest";
+                    db.get(configId).then(function (doc) {
+                        doc.names = savedPeople;
+                        return db.put(doc);
+                    }).then(function () {
+                        populatePeopleDropdown();
+                        initializeDatabaseForProfile(defaultPerson);
+                    }).catch(function () {
+                        populatePeopleDropdown();
+                        initializeDatabaseForProfile(defaultPerson);
+                    });
+                }
+            });
+        }
+            // ==========================================
+    // SECURE DATA DISPATCH DATA WRITER (FIXED)
+    // ==========================================
+    document.addEventListener('submit', function(e) {
+        // Intercept any submit actions firing inside our tracking container
+        if (e.target && (e.target.id === 'stay-form' || e.target.tagName === 'FORM')) {
+            e.preventDefault();
+            
+            // 1. EXTRACT LIVE ELEMENT STRINGS IMMEDIATELY
+            const arrivalDate = document.getElementById('arrival-date').value;
+            const departureDate = document.getElementById('departure-date').value;
+
+            if (!arrivalDate || !departureDate) {
+                alert("Please select both Arrival and Departure dates.");
+                return;
+            }
+
+            // 2. TIMELINE BOUNDARY GUARD
+            if (new Date(departureDate) <= new Date(arrivalDate)) {
+                alert("Departure date must be after the arrival date.");
+                return;
+            }
+
+            // 3. CAPTURE ACTIVE OWNER STATE METADATA
+            let lockedProfileName = document.getElementById('active-person').value;
+            if (lockedProfileName === "ALL") {
+                const choice = prompt("Who is this stay for? (Type Dennis or Sarah):");
+                if (!choice) return;
+                
+                lockedProfileName = choice.trim().charAt(0).toUpperCase() + choice.trim().slice(1).toLowerCase();
+                if (lockedProfileName !== "Dennis" && lockedProfileName !== "Sarah") {
+                    alert("Invalid profile name entry. Stay log abandoned.");
+                    return;
+                }
+            }
+
+            // 4. COMPUTE NIGHT COUNTS DURATION COEFFICIENTS
+            const diffTime = Math.abs(new Date(departureDate + "T00:00:00") - new Date(arrivalDate + "T00:00:00"));
+            const nights = Math.round(diffTime / (1000 * 60 * 60 * 24));
+
+            // 5. ASSEMBLE IMMUTABLE DOCUMENT BUNDLE PACKET
+            const doc = {
+                _id: 'trip_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7),
+                arrival: arrivalDate,
+                departure: departureDate,
+                nights: nights,
+                remark: document.getElementById('trip-remark') ? document.getElementById('trip-remark').value.trim() : "",
+                person: lockedProfileName 
+            };
+
+            console.log("Commencing database transaction put wrapper for object id:", doc._id);
+
+            // 6. EXECUTE TRANSACTION WRITE PUSH
+            db.put(doc).then(function () {
+                console.log("Document successfully archived into database container.");
+                
+                document.getElementById('arrival-date').value = '';
+                document.getElementById('departure-date').value = '';
+                if (document.getElementById('trip-remark')) document.getElementById('trip-remark').value = '';
+                
+                const depInput = document.getElementById('departure-date');
+                if (depInput && depInput.removeAttribute) {
+                    depInput.removeAttribute('min');
+                }
+                
+                // Force a total top-to-bottom clean rendering redraw cycle
+                fetchAndRenderTrips();
+            }).catch(function (err) { 
+                alert("Database write transaction aborted: " + err.message); 
+            });
+        }
+    });
+
+        if (toggleSettingsLink && settingsDrawer) {
+            toggleSettingsLink.addEventListener('click', function (e) {
+                e.preventDefault();
+                settingsDrawer.style.display = settingsDrawer.style.display === "none" ? "flex" : "none";
+                toggleSettingsLink.textContent = settingsDrawer.style.display === "none" ? "Show Server Configurations" : "Hide Server Configurations";
+            });
+        }
+        if (saveConfigBtn && configServerIP) {
+            saveConfigBtn.addEventListener('click', function () {
+                const freshIP = configServerIP.value.trim();
+                if (!freshIP) return alert("Invalid entry.");
+                localStorage.setItem('tracker_server_ip', freshIP);
+                alert("Server configuration applied! Refreshing system...");
+                location.reload();
+            });
+        }
+        window.deleteTrip = function (id, rev) {
+            if (confirm("Delete this log?")) {
+                db.remove(id, rev).then(function () { fetchAndRenderTrips(); });
+            }
+        };
+        // ==========================================
+        // 7. INITIALIZATION BOOTSTRAP TRIGGER PIPELINE
+        // ==========================================
+        populatePeopleDropdown();
+        populateTaxYearsDropdown();
+        if (configServerIP) configServerIP.value = savedServerIP;
+        // Fire up the main engine safely now that everything is declared!
+        initializeDatabaseForProfile(defaultPerson);
+    </script>
+</body>
+
+</html>

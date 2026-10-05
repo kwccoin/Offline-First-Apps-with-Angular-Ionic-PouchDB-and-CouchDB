@@ -47,10 +47,11 @@ and change the cloudfare to
 
 admin = Cdb3579!
 http://localhost:5984/_utils/#login
+remoteDB = new PouchDB('http://admin:Cdb3579%21@' + targetServerIP + ':5984/' + databaseName);
 
 {"error":"unauthorized","reason":"You are not a server admin."}
 
-mini is 192.168.1.41
+mini is 192.168.1.41 now 256
 
 Crazy about the andorid issue
 
@@ -75,3 +76,5 @@ The uchg (user unchangeable) system flag locks the file at the kernel layer. The
 }
 
 #h3 cut and paste the above to capactior.config.json
+
+http://localhost:5984/_utils/#/database/uk_stay_tracker/_all_docs
